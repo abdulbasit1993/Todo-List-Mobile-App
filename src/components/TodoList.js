@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, RefreshControl} from 'react-native';
 import {
   responsiveWidth,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import {colors} from '../constants/colors';
 
-const TodoList = ({data}) => {
+const TodoList = ({data, isRefreshing, onRefresh}) => {
   return (
     <FlatList
       data={data}
@@ -15,6 +15,9 @@ const TodoList = ({data}) => {
           <Text style={styles.itemText}>{item?.content}</Text>
         </View>
       )}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+      }
     />
   );
 };
