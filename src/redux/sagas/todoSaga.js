@@ -1,6 +1,6 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
 import * as type from '../../constants/actionTypes';
-import {getCall, postCall} from '../../services/apiService';
+import {getCall, postCall, deleteCall} from '../../services/apiService';
 
 async function getTodos() {
   return await getCall('/todos/getAllTodos')
@@ -13,6 +13,14 @@ async function getTodos() {
 async function createTodo(data) {
   console.log('createTodo [todoSaga] data ===>> ', data);
   return await postCall('/todos/add', data)
+    .then(response => response)
+    .catch(error => {
+      throw error;
+    });
+}
+
+async function deleteTodo(data) {
+  return await deleteCall(`/todos/delete/${data}`)
     .then(response => response)
     .catch(error => {
       throw error;
@@ -44,4 +52,18 @@ function* addTodoWorker(action) {
 
 export function* addTodoWatcher() {
   yield takeEvery(type.ADD_TODO_REQUEST, addTodoWorker);
+}
+
+function* deleteTodoWorker(action) {
+  console.log('deleteTodoWorker action', action);
+  try {
+    const todos = yield call(deleteTodo, action.data);
+    yield put({type: type.DELETE_TODO_SUCCESS, response: todos});
+  } catch (e) {
+    yield put({type: type.DELETE_TODO_FAILED, message: e.message});
+  }
+}
+
+export function* deleteTodoWatcher() {
+  yield takeEvery(type.DELETE_TODO_REQUEST, deleteTodoWorker);
 }

@@ -8,6 +8,9 @@ const initialState = {
   addTodo: [],
   addTodoSuccess: false,
   addTodoError: false,
+  deleteTodoSuccess: false,
+  deleteTodoError: false,
+  deleteTodo: [],
 };
 
 export default function getTodos(state = initialState, action) {
@@ -55,6 +58,29 @@ export default function getTodos(state = initialState, action) {
         ...state,
         isLoading: false,
         addTodoError: true,
+        errorMsg: action,
+      };
+
+    case type.DELETE_TODO_REQUEST:
+      console.log('DELETE_TODO_REQUEST ==>> ', action);
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case type.DELETE_TODO_SUCCESS:
+      console.log('DELETE_TODO_SUCCESS ==>> ', action);
+      return {
+        ...state,
+        isLoading: false,
+        deleteTodoSuccess: true,
+        deleteTodo: action,
+      };
+    case type.DELETE_TODO_FAILED:
+      console.log('DELETE_TODO_FAILED ==>> ', action);
+      return {
+        ...state,
+        isLoading: false,
+        deleteTodoError: true,
         errorMsg: action,
       };
     default:
