@@ -12,3 +12,10 @@ export function addTodo(data) {
     data: data,
   };
 }
+
+export function deleteTodo(data) {
+  return {
+    type: type.DELETE_TODO_REQUEST,
+    data: data,
+  };
+}

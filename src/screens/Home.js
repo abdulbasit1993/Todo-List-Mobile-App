@@ -4,10 +4,11 @@ import Header from '../components/Header';
 import Loader from '../components/Loader';
 import FloatingActionButton from '../components/FloatingActionButton';
 import AddTodoModal from '../components/AddTodoModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import TodoList from '../components/TodoList';
 import {colors} from '../constants/colors';
 import {useDispatch, useSelector} from 'react-redux';
-import {getTodos, addTodo} from '../redux/actions/todoAction';
+import {getTodos, addTodo, deleteTodo} from '../redux/actions/todoAction';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import Toast from 'react-native-toast-message';
 
@@ -20,6 +21,9 @@ const Home = () => {
   console.log('todoData ===>>>> ', todoData);
 
   const [isAddTodoModalVisible, setIsAddTodoModalVisible] = useState(false);
+  const [isDeleteTodoModalVisible, setIsDeleteTodoModalVisible] =
+    useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
@@ -50,6 +54,22 @@ const Home = () => {
     }
   };
 
+  const handleDelete = item => {
+    setItemToDelete(item);
+    setIsDeleteTodoModalVisible(!isDeleteTodoModalVisible);
+  };
+
+  const triggerDelete = () => {
+    if (!itemToDelete) {
+      console.log('no item selected...');
+      return;
+    } else {
+      console.log('deleting item... ', itemToDelete);
+      dispatch(deleteTodo(itemToDelete?._id));
+      setIsDeleteTodoModalVisible(!isDeleteTodoModalVisible);
+    }
+  };
+
   useEffect(() => {
     dispatch(getTodos());
   }, []);
@@ -68,6 +88,7 @@ const Home = () => {
                 data={todoData}
                 isRefreshing={isRefreshing}
                 onRefresh={handleRefresh}
+                onDeletePress={item => handleDelete(item)}
               />
             </View>
           )}
@@ -80,6 +101,14 @@ const Home = () => {
         isVisible={isAddTodoModalVisible}
         onClosePress={() => setIsAddTodoModalVisible(!isAddTodoModalVisible)}
         onSubmitPress={data => handleSubmit(data)}
+      />
+
+      <DeleteConfirmModal
+        isVisible={isDeleteTodoModalVisible}
+        onClosePress={() =>
+          setIsDeleteTodoModalVisible(!isDeleteTodoModalVisible)
+        }
+        onDeletePress={() => triggerDelete()}
       />
     </SafeAreaView>
   );
