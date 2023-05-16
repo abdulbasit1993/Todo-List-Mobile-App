@@ -13,18 +13,40 @@ import {
 } from 'react-native-responsive-dimensions';
 import {colors} from '../constants/colors';
 import DeleteIcon from 'react-native-vector-icons/Foundation';
+import EditIcon from 'react-native-vector-icons/FontAwesome5';
 
-const TodoList = ({data, isRefreshing, onRefresh, onDeletePress}) => {
+const TodoList = ({
+  data,
+  isRefreshing,
+  onRefresh,
+  onDeletePress,
+  onEditPress,
+}) => {
   return (
     <FlatList
       data={data}
       renderItem={({item}) => (
         <View style={styles.itemContainer}>
-          <View style={{width: '90%'}}>
+          <View style={{width: '80%'}}>
             <Text style={styles.itemText}>{item?.content}</Text>
           </View>
 
-          <View style={{width: '10%'}}>
+          <View
+            style={{
+              width: '20%',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
+            <TouchableOpacity
+              onPress={() => onEditPress(item)}
+              style={styles.editBtn}>
+              <EditIcon
+                name="edit"
+                color={colors.WHITE}
+                style={{fontSize: 18}}
+              />
+            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => onDeletePress(item)}
               style={styles.deleteBtn}>
@@ -60,6 +82,14 @@ const styles = StyleSheet.create({
   },
   deleteBtn: {
     backgroundColor: 'red',
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editBtn: {
+    backgroundColor: colors.PRIMARY,
     width: 30,
     height: 30,
     borderRadius: 10,

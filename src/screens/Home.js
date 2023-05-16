@@ -5,10 +5,16 @@ import Loader from '../components/Loader';
 import FloatingActionButton from '../components/FloatingActionButton';
 import AddTodoModal from '../components/AddTodoModal';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import UpdateTodoModal from '../components/UpdateTodoModal';
 import TodoList from '../components/TodoList';
 import {colors} from '../constants/colors';
 import {useDispatch, useSelector} from 'react-redux';
-import {getTodos, addTodo, deleteTodo} from '../redux/actions/todoAction';
+import {
+  getTodos,
+  addTodo,
+  deleteTodo,
+  updateTodo,
+} from '../redux/actions/todoAction';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import Toast from 'react-native-toast-message';
 
@@ -17,13 +23,16 @@ const Home = () => {
 
   const todoReducer = useSelector(state => state?.todoReducer);
   const todoData = useSelector(state => state?.todoReducer?.todos?.data);
-  console.log('todoReducer ===>>>> ', todoReducer);
-  console.log('todoData ===>>>> ', todoData);
+  // console.log('todoReducer ===>>>> ', todoReducer);
+  // console.log('todoData ===>>>> ', todoData);
 
   const [isAddTodoModalVisible, setIsAddTodoModalVisible] = useState(false);
   const [isDeleteTodoModalVisible, setIsDeleteTodoModalVisible] =
     useState(false);
+  const [isUpdateTodoModalVisible, setIsUpdateTodoModalVisible] =
+    useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
@@ -54,9 +63,40 @@ const Home = () => {
     }
   };
 
+  const handleUpdateSubmit = data => {
+    if (!selectedItem) {
+      console.log('no item selected...');
+      return;
+    } else {
+      console.log('submitting for update ===> ', data);
+
+      const dataObj = {
+        content: data,
+      };
+
+      if (!data) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Please enter some todo content!',
+        });
+        setIsUpdateTodoModalVisible(!isUpdateTodoModalVisible);
+        return;
+      } else {
+        dispatch(updateTodo(dataObj, selectedItem?._id));
+        setIsUpdateTodoModalVisible(!isUpdateTodoModalVisible);
+      }
+    }
+  };
+
   const handleDelete = item => {
     setItemToDelete(item);
     setIsDeleteTodoModalVisible(!isDeleteTodoModalVisible);
+  };
+
+  const handleUpdate = item => {
+    setSelectedItem(item);
+    setIsUpdateTodoModalVisible(!isUpdateTodoModalVisible);
   };
 
   const triggerDelete = () => {
@@ -89,6 +129,7 @@ const Home = () => {
                 isRefreshing={isRefreshing}
                 onRefresh={handleRefresh}
                 onDeletePress={item => handleDelete(item)}
+                onEditPress={item => handleUpdate(item)}
               />
             </View>
           )}
@@ -109,6 +150,15 @@ const Home = () => {
           setIsDeleteTodoModalVisible(!isDeleteTodoModalVisible)
         }
         onDeletePress={() => triggerDelete()}
+      />
+
+      <UpdateTodoModal
+        isVisible={isUpdateTodoModalVisible}
+        onClosePress={() =>
+          setIsUpdateTodoModalVisible(!isUpdateTodoModalVisible)
+        }
+        onSubmitPress={data => handleUpdateSubmit(data)}
+        selectedItem={selectedItem}
       />
     </SafeAreaView>
   );

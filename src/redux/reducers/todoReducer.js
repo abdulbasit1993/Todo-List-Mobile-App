@@ -11,18 +11,19 @@ const initialState = {
   deleteTodoSuccess: false,
   deleteTodoError: false,
   deleteTodo: [],
+  updateTodoSuccess: false,
+  updateTodoError: false,
+  updateTodo: [],
 };
 
 export default function getTodos(state = initialState, action) {
   switch (action.type) {
     case type.GET_TODOS_REQUEST:
-      console.log('GET_TODOS_REQUEST ==>> ', action);
       return {
         ...state,
         isLoading: true,
       };
     case type.GET_TODOS_SUCCESS:
-      console.log('GET_TODOS_SUCCESS ==>> ', action);
       return {
         ...state,
         isLoading: false,
@@ -30,7 +31,6 @@ export default function getTodos(state = initialState, action) {
         todos: action.response.data,
       };
     case type.GET_TODOS_FAILED:
-      console.log('GET_TODOS_FAILED ==>> ', action);
       return {
         ...state,
         isLoading: false,
@@ -39,13 +39,11 @@ export default function getTodos(state = initialState, action) {
       };
 
     case type.ADD_TODO_REQUEST:
-      console.log('ADD_TODO_REQUEST ==>> ', action);
       return {
         ...state,
         isLoading: true,
       };
     case type.ADD_TODO_SUCCESS:
-      console.log('ADD_TODO_SUCCESS ==>> ', action);
       return {
         ...state,
         isLoading: false,
@@ -53,7 +51,6 @@ export default function getTodos(state = initialState, action) {
         addTodo: action.response.data,
       };
     case type.ADD_TODO_FAILED:
-      console.log('ADD_TODO_FAILED ==>> ', action);
       return {
         ...state,
         isLoading: false,
@@ -62,13 +59,11 @@ export default function getTodos(state = initialState, action) {
       };
 
     case type.DELETE_TODO_REQUEST:
-      console.log('DELETE_TODO_REQUEST ==>> ', action);
       return {
         ...state,
         isLoading: true,
       };
     case type.DELETE_TODO_SUCCESS:
-      console.log('DELETE_TODO_SUCCESS ==>> ', action);
       return {
         ...state,
         isLoading: false,
@@ -76,11 +71,30 @@ export default function getTodos(state = initialState, action) {
         deleteTodo: action,
       };
     case type.DELETE_TODO_FAILED:
-      console.log('DELETE_TODO_FAILED ==>> ', action);
       return {
         ...state,
         isLoading: false,
         deleteTodoError: true,
+        errorMsg: action,
+      };
+
+    case type.UPDATE_TODO_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case type.UPDATE_TODO_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        updateTodoSuccess: true,
+        updateTodo: action,
+      };
+    case type.UPDATE_TODO_FAILED:
+      return {
+        ...state,
+        isLoading: false,
+        updateTodoError: true,
         errorMsg: action,
       };
     default:
