@@ -19,3 +19,11 @@ export function deleteTodo(data) {
     data: data,
   };
 }
+
+export function updateTodo(data, id) {
+  return {
+    type: type.UPDATE_TODO_REQUEST,
+    data: data,
+    id: id,
+  };
+}

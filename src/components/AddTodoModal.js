@@ -31,6 +31,7 @@ const AddTodoModal = ({isVisible, onClosePress, onSubmitPress}) => {
 
           <TextInput
             placeholder="Enter todo content..."
+            placeholderTextColor={colors.BLACK}
             style={styles.inputBox}
             onChangeText={text => setTodoText(text)}
           />
